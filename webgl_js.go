@@ -12,13 +12,13 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 )
 
-type Texture struct{ js.Object }
-type Buffer struct{ js.Object }
-type FrameBuffer struct{ js.Object }
-type RenderBuffer struct{ js.Object }
-type Program struct{ js.Object }
-type UniformLocation struct{ js.Object }
-type Shader struct{ js.Object }
+type Texture struct{ *js.Object }
+type Buffer struct{ *js.Object }
+type FrameBuffer struct{ *js.Object }
+type RenderBuffer struct{ *js.Object }
+type Program struct{ *js.Object }
+type UniformLocation struct{ *js.Object }
+type Shader struct{ *js.Object }
 
 type ContextAttributes struct {
 	// If Alpha is true, the drawing buffer has an alpha channel for
@@ -53,7 +53,7 @@ func DefaultAttributes() *ContextAttributes {
 }
 
 type Context struct {
-	js.Object
+	*js.Object
 	ARRAY_BUFFER                                 int `js:"ARRAY_BUFFER"`
 	ARRAY_BUFFER_BINDING                         int `js:"ARRAY_BUFFER_BINDING"`
 	ATTACHED_SHADERS                             int `js:"ATTACHED_SHADERS"`
@@ -350,7 +350,7 @@ type Context struct {
 // NewContext takes an HTML5 canvas object and optional context attributes.
 // If an error is returned it means you won't have access to WebGL
 // functionality.
-func NewContext(canvas js.Object, ca *ContextAttributes) (*Context, error) {
+func NewContext(canvas *js.Object, ca *ContextAttributes) (*Context, error) {
 	if js.Global.Get("WebGLRenderingContext") == js.Undefined {
 		return nil, errors.New("Your browser doesn't appear to support webgl.")
 	}
@@ -724,7 +724,7 @@ func (c *Context) GetBufferParameter(target, pname int) int {
 
 // TODO: Create type specific variations.
 // Returns the natural type value for a constant parameter.
-func (c *Context) GetParameter(pname int) js.Object {
+func (c *Context) GetParameter(pname int) *js.Object {
 	return c.Call("getParameter", pname)
 }
 
@@ -735,13 +735,13 @@ func (c *Context) GetError() int {
 
 // TODO: Create type specific variations.
 // Enables a passed extension, otherwise returns null.
-func (c *Context) GetExtension(name string) js.Object {
+func (c *Context) GetExtension(name string) *js.Object {
 	return c.Call("getExtension", name)
 }
 
 // TODO: Create type specific variations.
 // Gets a parameter value for a given target and attachment.
-func (c *Context) GetFramebufferAttachmentParameter(target, attachment, pname int) js.Object {
+func (c *Context) GetFramebufferAttachmentParameter(target, attachment, pname int) *js.Object {
 	return c.Call("getFramebufferAttachmentParameter", target, attachment, pname)
 }
 
@@ -771,7 +771,7 @@ func (c *Context) GetRenderbufferParameter(target, pname int) int {
 
 // TODO: Create type specific variations.
 // Returns the value of the parameter associated with pname for a shader object.
-func (c *Context) GetShaderParameter(shader *Shader, pname int) js.Object {
+func (c *Context) GetShaderParameter(shader *Shader, pname int) *js.Object {
 	return c.Call("getShaderParameter", shader.Object, pname)
 }
 
@@ -802,13 +802,13 @@ func (c *Context) GetSupportedExtensions() []string {
 
 // TODO: Create type specific variations.
 // Returns the value for a parameter on an active texture unit.
-func (c *Context) GetTexParameter(target, pname int) js.Object {
+func (c *Context) GetTexParameter(target, pname int) *js.Object {
 	return c.Call("getTexParameter", target, pname)
 }
 
 // TODO: Create type specific variations.
 // Gets the uniform value for a specific location in a program.
-func (c *Context) GetUniform(program *Program, location *UniformLocation) js.Object {
+func (c *Context) GetUniform(program *Program, location *UniformLocation) *js.Object {
 	return c.Call("getUniform", program.Object, location.Object)
 }
 
@@ -821,7 +821,7 @@ func (c *Context) GetUniformLocation(program *Program, name string) *UniformLoca
 // TODO: Create type specific variations.
 // Returns data for a particular characteristic of a vertex
 // attribute at an index in a vertex attribute array.
-func (c *Context) GetVertexAttrib(index, pname int) js.Object {
+func (c *Context) GetVertexAttrib(index, pname int) *js.Object {
 	return c.Call("getVertexAttrib", index, pname)
 }
 
@@ -833,7 +833,7 @@ func (c *Context) GetVertexAttribOffset(index, pname int) int {
 // public function hint(target:GLenum, mode:GLenum) : Void;
 
 // Returns true if buffer is valid, false otherwise.
-func (c *Context) IsBuffer(buffer js.Object) bool {
+func (c *Context) IsBuffer(buffer *js.Object) bool {
 	return c.Call("isBuffer", buffer).Bool()
 }
 
@@ -898,7 +898,7 @@ func (c *Context) PolygonOffset(factor, units float64) {
 // TODO: Figure out if pixels should be a slice.
 // Reads pixel data into an ArrayBufferView object from a
 // rectangular area in the color buffer of the active frame buffer.
-func (c *Context) ReadPixels(x, y, width, height, format, typ int, pixels js.Object) {
+func (c *Context) ReadPixels(x, y, width, height, format, typ int, pixels *js.Object) {
 	c.Call("readPixels", x, y, width, height, format, typ, pixels)
 }
 
@@ -922,11 +922,11 @@ func (c *Context) ShaderSource(shader *Shader, source string) {
 
 // Loads the supplied pixel data into a texture.
 func (c *Context) TexImage2D(target, level, internalFormat, format, kind int, data interface{}) {
-	var pix js.Object
+	var pix *js.Object
 	if data == nil {
 		pix = nil
 	} else {
-		pix = data.(js.Object)
+		pix = data.(*js.Object)
 	}
 	c.Call("texImage2D", target, level, internalFormat, format, kind, pix)
 }
@@ -937,7 +937,7 @@ func (c *Context) TexParameteri(target int, pname int, param int) {
 }
 
 // Replaces a portion of an existing 2D texture image with all of another image.
-func (c *Context) TexSubImage2D(target, level, xoffset, yoffset, format, typ int, image js.Object) {
+func (c *Context) TexSubImage2D(target, level, xoffset, yoffset, format, typ int, image *js.Object) {
 	c.Call("texSubImage2D", target, level, xoffset, yoffset, format, typ, image)
 }
 
