@@ -646,6 +646,10 @@ func (c *Context) CreateTexture() *Texture {
 	return &Texture{loc}
 }
 
+func (c *Context) DeleteTexture(texture *Texture) {
+	gl.DeleteTextures(1, &[]uint32{texture.uint32}[0])
+}
+
 func (c *Context) BindTexture(target int, texture *Texture) {
 	if texture == nil {
 		gl.BindTexture(uint32(target), 0)
@@ -708,12 +712,20 @@ func (c *Context) EnableVertexAttribArray(index int) {
 	gl.EnableVertexAttribArray(uint32(index))
 }
 
+func (c *Context) DisableVertexAttribArray(index int) {
+	gl.DisableVertexAttribArray(uint32(index))
+}
+
 func (c *Context) VertexAttribPointer(index, size, typ int, normal bool, stride int, offset int) {
 	gl.VertexAttribPointer(uint32(index), int32(size), uint32(typ), normal, int32(stride), gl.PtrOffset(offset))
 }
 
 func (c *Context) Enable(flag int) {
 	gl.Enable(uint32(flag))
+}
+
+func (c *Context) Disable(flag int) {
+	gl.Disable(uint32(flag))
 }
 
 func (c *Context) BlendFunc(src, dst int) {
