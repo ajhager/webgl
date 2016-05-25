@@ -659,10 +659,6 @@ func (c *Context) EnableVertexAttribArray(index int) {
 	c.Call("enableVertexAttribArray", index)
 }
 
-func (c *Context) DisableVertexAttribArray(index int) {
-	c.Call("disableVertexAttribArray", index)
-}
-
 func (c *Context) Finish() {
 	c.Call("finish")
 }
